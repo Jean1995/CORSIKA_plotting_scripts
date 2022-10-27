@@ -23,6 +23,8 @@ OUTPUT_NAME = sys.argv[3]
 labels = ["CORSIKA 7", "CORSIKA 8"]
 colors = ['orange', 'blue']
 
+assert(len(labels) == len(colors))
+
 CREATE_CHARGE_EXCESS_PLOTS = True
 CREATE_XMAX_PLOTS = True
 CREATE_LONGITUDINAL_PLOTS = True
