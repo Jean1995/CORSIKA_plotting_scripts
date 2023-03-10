@@ -157,6 +157,6 @@ if (CREATE_LONGITUDINAL_PLOTS):
             profiles.append(profile_C7(df, p_type, NUM))
         for df, NUM in zip(C8_DATA, C8_SHOWER_NUMBERS):
             profiles.append(profile_C8(df, p_type, NUM))
-        plot_long_hist_ratio(grammage, profiles, labels, colors, f"Longituginal profile for {p_type}")
+        plot_long_hist_ratio(grammage, profiles, labels, colors, f"Longitudinal profile for {p_type}")
         plt.savefig(f"{OUTPUT_NAME}/long_{p_type}.png", dpi=300)
 
