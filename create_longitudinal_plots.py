@@ -16,16 +16,19 @@ from scripts import *
 # PATH_TO_C7_FOLDER: Folder that conatins DATxxxx CORSIKA 7 files
 # PATH_TO_C8_FOLDER: Folder structure 'shower_x/*/profile/profile.parquet', with shower_x being different showers
 
-if (len(sys.argv) != 4):
-    print("Usage: create_plots.py PATH_TO_C7_FOLDER PATH_TO_C8_FOLDER OUTPUT_NAME")
+if (len(sys.argv) != 5):
+    print("Usage: create_plots.py PATH_TO_C7_FOLDER PATH_TO_C8_FOLDER PATH_TO_C8_FOLDER_FIX OUTPUT_NAME")
     assert(False)
 
 C7_PATHS = [sys.argv[1]]
-C8_PATHS = [sys.argv[2]]
-OUTPUT_NAME = sys.argv[3]
+C8_PATHS = [sys.argv[2], sys.argv[3]]
+OUTPUT_NAME = sys.argv[4]
 
-labels = ["CORSIKA 7", "CORSIKA 8"]
-colors = ['orange', 'blue']
+labels = ["CORSIKA 7", "CORSIKA 8", "CORSIKA 8 fixed"]
+colors = ['tab:orange', 'tab:blue', 'tab:green']
+
+NAME_PROFILE_FOLDER_C8 = "profile" # change name of folder where C8 profiles are stored
+xmax_C8 = 1040 # upper limit of grammage for C8
 
 assert(len(labels) == len(colors))
 
@@ -54,9 +57,9 @@ C8_SHOWER_NUMBERS = []
 for PATH in C8_PATHS:
     print(f"Reading in C8 profiles from folder {PATH}")
     profiles= []
-    for path in glob.glob(f"{PATH}/*/*/profile/profile.parquet"):
-        print(f"read {path}")
-        profiles.append(pd.read_parquet(path))
+    for path in glob.glob(f"{PATH}/*/*/{NAME_PROFILE_FOLDER_C8}/profile.parquet"):
+        data_raw = pd.read_parquet(path)
+        profiles.append(data_raw[data_raw['X'] <= xmax_C8]) # cut grammage above xmax_X8
     C8_DATA.append(pd.concat(profiles))
     num_showers = len(profiles)
     C8_SHOWER_NUMBERS.append(num_showers)
@@ -126,6 +129,7 @@ for PATH in C7_PATHS:
     C7_DATA.append(C7_df)
 
 print("Finished reading C7")
+
 # generate grammage
 
 grammage = []
