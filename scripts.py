@@ -129,3 +129,37 @@ def plot_Xmax_hist_ratio(X_list, profile_list, label_list, color_list, title='',
     fig.suptitle(title, fontsize=14)
     fig.tight_layout()
 
+def plot_lateral_hist_ratio(bins, hist_list, label_list, color_list, title='', xaxis='', ratio_lim=(-1, 1), xlog=True):    
+    '''
+    bins: location of bins (length n)
+    hist: array of shape m * n, where m is the number of profiles. each row has n entires, where n describes the histogram bin entry
+    '''
+
+    fig, ax = plt.subplots(2, 1, gridspec_kw={'height_ratios': [2, 1]}, figsize=(15,10),sharex=True)
+    
+    ax[0].tick_params('x', labelbottom=False) # only for last plot
+    for hist, label, color in zip(hist_list, label_list, color_list):
+        ax[0].fill_between(bins[1:], np.percentile(hist, q=25, axis=0), np.percentile(hist, q=75, axis=0), step='pre', alpha=0.5, color=color)
+        ax[0].step(bins[1:], np.percentile(hist, q=50, axis=0), label=label, color=color)
+    ax[0].grid(which='major')
+    ax[0].set_ylabel('# particles', fontsize=18)
+    if (xlog):
+        ax[0].set_xscale('log')
+    ax[0].set_yscale('log')
+    ax[0].legend(bbox_to_anchor=(0, 1, 1, 0), loc="lower left", ncol=len(label_list), fontsize=18)
+
+    for hist, label, color in zip(hist_list[1:], label_list[1:], color_list[1:]):
+        # find common X values for base and compare
+        vals_base = np.percentile(hist_list[0], q=50, axis=0)
+        vals_compare = np.percentile(hist, q=50, axis=0)
+        ax[1].step(bins[1:], (vals_compare - vals_base)/vals_base, label=label, color=color)   
+    ax[1].grid(which='major')
+    fig.subplots_adjust(hspace=0.05)
+    ax[1].set_xlabel(xaxis, fontsize=18)
+    ax[1].set_ylabel(f"ratio to {label_list[0]}", fontsize=18)
+    ax[1].set_ylim(ratio_lim)
+    ax[0].tick_params(axis='both', labelsize=16)
+    ax[1].tick_params(axis='both', labelsize=16)
+    #fig.suptitle(title, fontsize=18)
+    fig.tight_layout()
+        
