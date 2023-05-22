@@ -24,7 +24,7 @@ OUTPUT_NAME = sys.argv[3]
 labels = ["CORSIKA 7", "CORSIKA 8"]
 colors = ['tab:orange', 'tab:blue']
 
-NAME_PROFILE_FOLDER_C8 = "particles" # change name of folder where C8 profiles are stored
+NAME_PARTICLE_FOLDER_C8 = "particles" # change name of folder where C8 profiles are stored
 
 INJECTION_HEIGHT_C8 = 111.75e3 # in m, necessary for correction time calculation
 INJECTION_HEIGHT_C7 = 112.8e3 # in m
@@ -57,9 +57,11 @@ E_max = -np.inf
 # if X is too small, statistics are not big enough.
 MAX_ITERATIONS = 5
 
+print("Start determining histogram limits")
+
 i = 0
 for PATH in C8_PATHS:
-    for path in glob.glob(f"{PATH}/*/*/particles/particles.parquet"):
+    for path in glob.glob(f"{PATH}/*/*/{NAME_PARTICLE_FOLDER_C8}/particles.parquet"):
         i = i+1
         if (i >= MAX_ITERATIONS):
             break
@@ -81,7 +83,9 @@ for PATH in C7_PATHS:
                     break
                 t_min = min(t_min, min(e.particles['t']-time_bias_C7))
                 t_max = max(t_max, max(e.particles['t']-time_bias_C7))
-
+            else:
+                continue
+            break
 NUM_HIST_BINS_T = 25
 MIN_HIST_BINS_T = 1e-3 # TODO: Weird artifact for CORSIKA 7 at small times compared to CORSIKA 8
 MAX_HIST_BINS_T = t_max
@@ -115,11 +119,18 @@ C8_E_hists = []
 
 C8_t_hists = []
 
+NOTIFICATION_INTERVAL = 100 # get message for every Xth shower
+i = 0
+
 for PATH in C8_PATHS:
+    print("Read C8 showers from path", PATH)
     r_hists = [ [] for _ in range(len(particles)) ] # create empty list for every particle type
     E_hists = [ [] for _ in range(len(particles)) ] # create empty list for every particle type
     t_hists = [ [] for _ in range(len(particles)) ] # create empty list for every particle type
-    for path in glob.glob(f"{PATH}/*/*/particles/particles.parquet"):
+    for path in glob.glob(f"{PATH}/*/*/{NAME_PARTICLE_FOLDER_C8}/particles.parquet"):
+        i = i+1
+        if(i%NOTIFICATION_INTERVAL==0):
+            print("reading shower number", i)
         df = pd.read_parquet(path, columns=["pdg", "kinetic_energy", "x", "y", "time"])
 
         for count, particle in enumerate(particles):
@@ -156,6 +167,7 @@ C7_E_hists = []
 C7_t_hists = []
 
 for PATH in C7_PATHS:
+    print("Read C7 showers from path", PATH)
     r_hists = [ [] for _ in range(len(particles)) ] # create empty list for every particle type
     E_hists = [ [] for _ in range(len(particles)) ] # create empty list for every particle type
     t_hists = [ [] for _ in range(len(particles)) ] # create empty list for every particle type
@@ -202,7 +214,7 @@ for count, p_name in enumerate(particles_names):
 
 for count, p_name in enumerate(particles_names):
     print(count)
-    plot_lateral_hist_ratio(BINS_R, [sublist[count] for sublist in C7_E_hists+C8_E_hists], labels, colors, f'{p_name}', r"energy on observation plane / GeV")
+    plot_lateral_hist_ratio(BINS_E, [sublist[count] for sublist in C7_E_hists+C8_E_hists], labels, colors, f'{p_name}', r"energy on observation plane / GeV")
     plt.savefig(f"{OUTPUT_NAME}/lateral_{p_name}_E.png", dpi=300)
 
 # t distribution
