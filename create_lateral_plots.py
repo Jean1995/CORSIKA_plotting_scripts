@@ -32,6 +32,10 @@ OBSLEVEL = 6798 # in m. if unknown, set to 0.
 
 XLOG_TIME = True
 
+# onyl read in the first X showers. can be used to create plots quicker for debug purposes
+# might also be used if there are unequal numbers of equal showers in the individual simulations
+LIMIT_INPUT = 100
+
 # Start...
 
 if not os.path.exists(OUTPUT_NAME):
@@ -42,6 +46,9 @@ if not os.path.exists(OUTPUT_NAME):
 c = 299_792_458  # speed of light in m/s
 time_bias_C7 = (INJECTION_HEIGHT_C7 - OBSLEVEL)/c * 1e9
 time_bias_C8 = (INJECTION_HEIGHT_C8 - OBSLEVEL)/c * 1e9 
+# NOTE: this is just set to take into account the differences for now, because there are particles in C8 which are quicker than the speed of light, apparently...
+#time_bias_C7 = (INJECTION_HEIGHT_C7 - INJECTION_HEIGHT_C8)/c * 1e9
+#time_bias_C8 = 0
 
 # define bins for lateral profiles
 
@@ -72,7 +79,6 @@ for PATH in C8_PATHS:
         E_max = max(E_max, max(df['kinetic_energy']))
         r_min = min(r_min, min(np.sqrt(df['x']**2 + df['y']**2)))
         r_max = max(r_max, max(np.sqrt(df['x']**2 + df['y']**2)))
-
 i = 0
 for PATH in C7_PATHS:
     for path in glob.glob(f"{PATH}/DAT*"):
@@ -88,6 +94,7 @@ for PATH in C7_PATHS:
             break
 NUM_HIST_BINS_T = 25
 MIN_HIST_BINS_T = 1e-3 # TODO: Weird artifact for CORSIKA 7 at small times compared to CORSIKA 8
+#MIN_HIST_BINS_T = t_min
 MAX_HIST_BINS_T = t_max
 if (XLOG_TIME):
     BINS_T = np.geomspace(MIN_HIST_BINS_T, MAX_HIST_BINS_T, NUM_HIST_BINS_T)
@@ -120,14 +127,17 @@ C8_E_hists = []
 C8_t_hists = []
 
 NOTIFICATION_INTERVAL = 100 # get message for every Xth shower
-i = 0
 
 for PATH in C8_PATHS:
+    i = 0
     print("Read C8 showers from path", PATH)
     r_hists = [ [] for _ in range(len(particles)) ] # create empty list for every particle type
     E_hists = [ [] for _ in range(len(particles)) ] # create empty list for every particle type
     t_hists = [ [] for _ in range(len(particles)) ] # create empty list for every particle type
     for path in glob.glob(f"{PATH}/*/*/{NAME_PARTICLE_FOLDER_C8}/particles.parquet"):
+        if (i > LIMIT_INPUT):
+            print(f"Reached maximum input of {LIMIT_INPUT} showers, contiunue...")
+            break
         i = i+1
         if(i%NOTIFICATION_INTERVAL==0):
             print("reading shower number", i)
@@ -167,6 +177,7 @@ C7_E_hists = []
 C7_t_hists = []
 
 for PATH in C7_PATHS:
+    i = 0
     print("Read C7 showers from path", PATH)
     r_hists = [ [] for _ in range(len(particles)) ] # create empty list for every particle type
     E_hists = [ [] for _ in range(len(particles)) ] # create empty list for every particle type
@@ -174,6 +185,10 @@ for PATH in C7_PATHS:
     for path in glob.glob(f"{PATH}/DAT*"):
         with CorsikaParticleFile(path) as f:
             for e in f:
+                if (i > LIMIT_INPUT):
+                    print(f"Reached maximum input of {i} showers, continue...")
+                    break
+                i = i+1
                 for count, particle in enumerate(particles):
                     r_list = []
                     E_list = []
