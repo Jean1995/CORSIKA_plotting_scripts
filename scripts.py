@@ -157,9 +157,56 @@ def plot_lateral_hist_ratio(bins, hist_list, label_list, color_list, title='', x
     fig.subplots_adjust(hspace=0.05)
     ax[1].set_xlabel(xaxis, fontsize=18)
     ax[1].set_ylabel(f"ratio to {label_list[0]}", fontsize=18)
-    ax[1].set_ylim(ratio_lim)
+    ax[1].set_ylim(*ratio_lim)
     ax[0].tick_params(axis='both', labelsize=16)
     ax[1].tick_params(axis='both', labelsize=16)
     #fig.suptitle(title, fontsize=18)
     fig.tight_layout()
-        
+       
+
+
+def plot_long_hist_ratio_lpm(X_list, profile_list, X_list_LPM, profile_list_LPM, label_list, color_list, title=''):    
+    '''
+    X: len n, which describes the X bins
+    profile: array of shape m * n, where m is the number of profiles. every row has n entries which describe the longitudinal profile
+    '''
+    assert(len(X_list) > 1)
+
+    fig, ax = plt.subplots(2, 1, gridspec_kw={'height_ratios': [2, 1]}, figsize=(15,10),sharex=True)
+    
+    ax[0].tick_params('x', labelbottom=False) # only for last plot
+    for X, profile, label, color in zip(X_list, profile_list, label_list, color_list):
+        ax[0].fill_between(X, np.percentile(profile.T, q=25, axis=1), np.percentile(profile.T, q=75, axis=1), step='pre', alpha=0.5, color=color)
+        ax[0].step(X, np.percentile(profile.T, q=50, axis=1), label=label, color=color)
+
+    for X, profile, label, color in zip(X_list_LPM, profile_list_LPM, label_list, color_list):
+        ax[0].fill_between(X, np.percentile(profile.T, q=25, axis=1), np.percentile(profile.T, q=75, axis=1), step='pre', alpha=0.5, color=color)
+        ax[0].step(X, np.percentile(profile.T, q=50, axis=1), label=f"{label} LPM", color=color, linestyle='dashed')
+
+    ax[0].grid(which='both')
+    ax[0].set_ylabel('# particles', fontsize=14)
+    
+    ax[0].legend(bbox_to_anchor=(0, 1, 1, 0), loc="lower left", ncol=2, fontsize=14)
+
+    for X, profile, label, color in zip(X_list[1:], profile_list[1:], label_list[1:], color_list[1:]):
+        # find common X values for base and compare
+        X_common, indices_base, indices_compare = np.intersect1d(X_list[0], X, return_indices=True)
+        vals_base = np.percentile(profile_list[0].T[indices_base], q=50, axis=1)
+        vals_compare = np.percentile(profile.T[indices_compare], q=50, axis=1)
+        ax[1].step(X_common, (vals_compare - vals_base)/vals_base, label=label, color=color)   
+
+
+    for X, profile, label, color in zip(X_list_LPM[1:], profile_list_LPM[1:], label_list[1:], color_list[1:]):
+        # find common X values for base and compare
+        X_common, indices_base, indices_compare = np.intersect1d(X_list_LPM[0], X, return_indices=True)
+        vals_base = np.percentile(profile_list_LPM[0].T[indices_base], q=50, axis=1)
+        vals_compare = np.percentile(profile.T[indices_compare], q=50, axis=1)
+        ax[1].step(X_common, (vals_compare - vals_base)/vals_base, label=label, color=color, linestyle='dashed')   
+
+    ax[1].grid(which='both')
+    fig.subplots_adjust(hspace=0.05)
+    ax[1].set_xlabel(r"grammage / g/cm²", fontsize=14)
+    ax[1].set_ylabel(f"ratio to {label_list[0]}", fontsize=14)
+    ax[1].set_ylim(-0.2, 0.2)
+    fig.suptitle(title, fontsize=14)
+    fig.tight_layout()

@@ -13,16 +13,16 @@ from scripts import *
 # PATH_TO_C7_FOLDER: Folder that conatins DATxxxx CORSIKA 7 files
 # PATH_TO_C8_FOLDER: Folder structure 'shower_x/*/NAME/profile.parquet', with shower_x being different showers
 
-if (len(sys.argv) != 5):
-    print("Usage: create_lateral_plots.py PATH_TO_C7_FOLDER PATH_TO_C8_FOLDER PATH_TO_C8_FOLDER_vcut OUTPUT_NAME")
+if (len(sys.argv) != 4):
+    print("Usage: create_lateral_plots.py PATH_TO_C7_FOLDER PATH_TO_C8_FOLDER OUTPUT_NAME")
     assert(False)
 
 C7_PATHS = [sys.argv[1]]
-C8_PATHS = [sys.argv[2], sys.argv[3]]
-OUTPUT_NAME = sys.argv[4]
+C8_PATHS = [sys.argv[2]]
+OUTPUT_NAME = sys.argv[3]
 
-labels = ["CORSIKA 7", "CORSIKA 8", "CORSIKA 8 vcut"]
-colors = ['tab:orange', 'tab:blue', 'tab:green']
+labels = ["CORSIKA 7", "CORSIKA 8"]
+colors = ['tab:orange', 'tab:blue']
 
 NAME_PARTICLE_FOLDER_C8 = "particles" # change name of folder where C8 profiles are stored
 
