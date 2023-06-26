@@ -15,7 +15,11 @@ from itertools import chain
 
 from scripts import *
 
-# PATH_TO_C7_FOLDER: Folder that conatins DATxxxx CORSIKA 7 files
+# NOTE: This script is meant for using panama with configurations where the FLONGOUT option of LONGI has been set to true, which means
+# that CORSIKA7 explicitly creates DATnnnnnn.long files. In this case, the longitudinal profile is not written to the standard DATnnnn
+# anymore. 
+
+# PATH_TO_C7_FOLDER: Folder that conatins DATxxxx.long CORSIKA 7 files
 # PATH_TO_C8_FOLDER: Folder structure 'shower_x/*/profile/profile.parquet', with shower_x being different showers
 
 if (len(sys.argv) != 4):
