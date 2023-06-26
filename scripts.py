@@ -136,13 +136,13 @@ def plot_Xmax_hist_ratio(X_list, profile_list, label_list, color_list, title='',
     fig.suptitle(title, fontsize=14)
     fig.tight_layout()
 
-def plot_lateral_hist_ratio(bins, hist_list, label_list, color_list, title='', xaxis='', ratio_lim=(-1, 1), xlog=True):    
+def plot_lateral_hist_ratio(bins, hist_list, label_list, color_list, title='', xaxis='', ratio_lim=(-1, 1), xlog=True, add_watermark=False):    
     '''
     bins: location of bins (length n)
     hist: array of shape m * n, where m is the number of profiles. each row has n entires, where n describes the histogram bin entry
     '''
 
-    fig, ax = plt.subplots(2, 1, gridspec_kw={'height_ratios': [2, 1]}, figsize=(15,10),sharex=True,add_watermark=False)
+    fig, ax = plt.subplots(2, 1, gridspec_kw={'height_ratios': [2, 1]}, figsize=(15,10),sharex=True)
     
     ax[0].tick_params('x', labelbottom=False) # only for last plot
     for hist, label, color in zip(hist_list, label_list, color_list):
