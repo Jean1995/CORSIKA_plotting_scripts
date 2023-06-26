@@ -6,6 +6,8 @@ import glob
 from corsikaio import CorsikaFile
 import sys
 
+import re
+
 from yaml import safe_load
 import datetime
 import time
