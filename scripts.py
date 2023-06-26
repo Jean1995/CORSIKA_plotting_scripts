@@ -37,7 +37,7 @@ def plot_long_hist_multiple(X_list, profile_list, label_list, color_list, title=
     plt.title(title, fontsize=14)    
     plt.tight_layout()
 
-def plot_long_hist_ratio(X_list, profile_list, label_list, color_list, title=''):    
+def plot_long_hist_ratio(X_list, profile_list, label_list, color_list, title='', add_watermark=False):    
     '''
     X: len n, which describes the X bins
     profile: array of shape m * n, where m is the number of profiles. every row has n entries which describe the longitudinal profile
@@ -54,6 +54,10 @@ def plot_long_hist_ratio(X_list, profile_list, label_list, color_list, title='')
     ax[0].set_ylabel('# particles', fontsize=14)
     
     ax[0].legend(bbox_to_anchor=(0, 1, 1, 0), loc="lower left", ncol=2, fontsize=14)
+
+    if (add_watermark):
+        ax[0].text(0.85, 0.85, 'C8 - ICRC2023', horizontalalignment='center', verticalalignment='center', transform = ax[0].transAxes, fontsize=18, alpha=0.5, color='gray')
+
 
     for X, profile, label, color in zip(X_list[1:], profile_list[1:], label_list[1:], color_list[1:]):
         # find common X values for base and compare
@@ -81,7 +85,7 @@ def plot_Xmax_hist(X_list, profile_list, label_list, color_list, title='', NUM_B
     plt.suptitle(title, fontsize=14)
     plt.tight_layout()
 
-def plot_Xmax_hist_ratio(X_list, profile_list, label_list, color_list, title='', NUM_BINS=15):
+def plot_Xmax_hist_ratio(X_list, profile_list, label_list, color_list, title='', NUM_BINS=15, add_watermark=False):
     assert(len(X_list) > 1)
     fig, ax = plt.subplots(2, 1, gridspec_kw={'height_ratios': [2, 1]}, figsize=(15,10),sharex=True)
     
@@ -116,6 +120,9 @@ def plot_Xmax_hist_ratio(X_list, profile_list, label_list, color_list, title='',
     ax[0].set_ylabel('# showers', fontsize=14)
     ax[0].legend(bbox_to_anchor=(0, 1, 1, 0), loc="lower left", ncol=2, fontsize=14)
     
+    if (add_watermark):
+        ax[0].text(0.85, 0.85, 'C8 - ICRC2023', horizontalalignment='center', verticalalignment='center', transform = ax[0].transAxes, fontsize=18, alpha=0.5, color='gray')
+
     for n, label, color in zip(n_list[1:], label_list[1:], color_list[1:]):
         ax[1].step(bins[1:], (n - n_list[0]) / n_list[0], color=color)
     ax[1].grid(which='both')
@@ -135,7 +142,7 @@ def plot_lateral_hist_ratio(bins, hist_list, label_list, color_list, title='', x
     hist: array of shape m * n, where m is the number of profiles. each row has n entires, where n describes the histogram bin entry
     '''
 
-    fig, ax = plt.subplots(2, 1, gridspec_kw={'height_ratios': [2, 1]}, figsize=(15,10),sharex=True)
+    fig, ax = plt.subplots(2, 1, gridspec_kw={'height_ratios': [2, 1]}, figsize=(15,10),sharex=True,add_watermark=False)
     
     ax[0].tick_params('x', labelbottom=False) # only for last plot
     for hist, label, color in zip(hist_list, label_list, color_list):
@@ -147,6 +154,9 @@ def plot_lateral_hist_ratio(bins, hist_list, label_list, color_list, title='', x
         ax[0].set_xscale('log')
     ax[0].set_yscale('log')
     ax[0].legend(bbox_to_anchor=(0, 1, 1, 0), loc="lower left", ncol=len(label_list), fontsize=18)
+
+    if (add_watermark):
+        ax[0].text(0.85, 0.85, 'C8 - ICRC2023', horizontalalignment='center', verticalalignment='center', transform = ax[0].transAxes, fontsize=18, alpha=0.5, color='gray')
 
     for hist, label, color in zip(hist_list[1:], label_list[1:], color_list[1:]):
         # find common X values for base and compare
@@ -165,7 +175,7 @@ def plot_lateral_hist_ratio(bins, hist_list, label_list, color_list, title='', x
        
 
 
-def plot_long_hist_ratio_lpm(X_list, profile_list, X_list_LPM, profile_list_LPM, label_list, color_list, title=''):    
+def plot_long_hist_ratio_lpm(X_list, profile_list, X_list_LPM, profile_list_LPM, label_list, color_list, title='', add_watermark=False):    
     '''
     X: len n, which describes the X bins
     profile: array of shape m * n, where m is the number of profiles. every row has n entries which describe the longitudinal profile
@@ -187,6 +197,9 @@ def plot_long_hist_ratio_lpm(X_list, profile_list, X_list_LPM, profile_list_LPM,
     ax[0].set_ylabel('# particles', fontsize=14)
     
     ax[0].legend(bbox_to_anchor=(0, 1, 1, 0), loc="lower left", ncol=2, fontsize=14)
+
+    if (add_watermark):
+        ax[0].text(0.85, 0.85, 'C8 - ICRC2023', horizontalalignment='center', verticalalignment='center', transform = ax[0].transAxes, fontsize=18, alpha=0.5, color='gray')
 
     for X, profile, label, color in zip(X_list[1:], profile_list[1:], label_list[1:], color_list[1:]):
         # find common X values for base and compare
