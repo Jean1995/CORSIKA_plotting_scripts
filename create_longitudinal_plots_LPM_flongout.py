@@ -106,11 +106,10 @@ def get_num_steps(filename):
                 number = int(match.group(1))
                 return number
 
-C7_DATA = []
+names = ["depth", "gamma", "positron", "electron", "muplus", "muminus", "hadron", "charged", "nuclei", "cherenkov"]
 
 C7_DATA = []
 C7_SHOWER_NUMBERS = []
-
 
 for PATH in C7_PATHS:
     print(f"Reading in C7 profiles from file {PATH}")
