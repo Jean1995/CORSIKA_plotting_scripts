@@ -246,6 +246,6 @@ for p_type in ['electron', 'positron', 'photon', 'charged', 'muminus', 'muplus',
         else:
             profiles_LPM.append(profile_C8(df, p_type, NUM))
 
-    plot_long_hist_ratio_lpm(grammage, profiles, grammage_LPM, profiles_LPM, labels, colors, f"Longitudinal profile for {p_type}", add_watermark=True)
-    plt.savefig(f"{OUTPUT_NAME}/long_{p_type}.png", dpi=300)
+    plot_long_hist_ratio_lpm(grammage, profiles, grammage_LPM, profiles_LPM, labels, colors, add_watermark=True)
+    plt.savefig(f"{OUTPUT_NAME}/long_{p_type}.pdf", dpi=300)
 

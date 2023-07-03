@@ -191,8 +191,8 @@ if (CREATE_CHARGE_EXCESS_PLOTS):
         profile_charged[profile_charged == 0] = 1 
         charge_excess.append((profile_electron - profile_positron) / (profile_charged))
 
-    plot_long_hist_ratio(grammage, charge_excess, labels, colors, f"Charge excess", add_watermark=True)
-    plt.savefig(f"{OUTPUT_NAME}/charge_excess.png", dpi=300)
+    plot_long_hist_ratio(grammage, charge_excess, labels, colors, add_watermark=True)
+    plt.savefig(f"{OUTPUT_NAME}/charge_excess.pdf", dpi=300)
 
 ### create X_max profiles
 
@@ -211,8 +211,8 @@ if (CREATE_XMAX_PLOTS):
                 profiles.append(profile_C8(df, 'muminus', NUM) + profile_C8(df, 'muplus', NUM))
             else:
                 profiles.append(profile_C8(df, p_type, NUM))
-        plot_Xmax_hist_ratio(grammage, profiles, labels, colors, f"Xmax distribution for {p_type}", NUM_BINS=20, add_watermark=True)
-        plt.savefig(f"{OUTPUT_NAME}/Xmax_{p_type}.png", dpi=300)
+        plot_Xmax_hist_ratio(grammage, profiles, labels, colors, NUM_BINS=20, add_watermark=True)
+        plt.savefig(f"{OUTPUT_NAME}/Xmax_{p_type}.pdf", dpi=300)
 
 ### plot longitudinal profiles
 
@@ -230,6 +230,6 @@ if (CREATE_LONGITUDINAL_PLOTS):
                 profiles.append(profile_C8(df, 'muminus', NUM) + profile_C8(df, 'muplus', NUM))
             else:
                 profiles.append(profile_C8(df, p_type, NUM))
-        plot_long_hist_ratio(grammage, profiles, labels, colors, f"Longitudinal profile for {p_type}", add_watermark=True)
-        plt.savefig(f"{OUTPUT_NAME}/long_{p_type}.png", dpi=300)
+        plot_long_hist_ratio(grammage, profiles, labels, colors, add_watermark=True)
+        plt.savefig(f"{OUTPUT_NAME}/long_{p_type}.pdf", dpi=300)
 

@@ -44,7 +44,7 @@ def plot_long_hist_ratio(X_list, profile_list, label_list, color_list, title='',
     '''
     assert(len(X_list) > 1)
 
-    fig, ax = plt.subplots(2, 1, gridspec_kw={'height_ratios': [2, 1]}, figsize=(15,10),sharex=True)
+    fig, ax = plt.subplots(2, 1, gridspec_kw={'height_ratios': [2, 1]}, figsize=(8,6),sharex=True)
     
     ax[0].tick_params('x', labelbottom=False) # only for last plot
     for X, profile, label, color in zip(X_list, profile_list, label_list, color_list):
@@ -53,7 +53,7 @@ def plot_long_hist_ratio(X_list, profile_list, label_list, color_list, title='',
     ax[0].grid(which='both')
     ax[0].set_ylabel('# particles', fontsize=14)
     
-    ax[0].legend(bbox_to_anchor=(0, 1, 1, 0), loc="lower left", ncol=2, fontsize=14)
+    ax[0].legend(bbox_to_anchor=(0, 1, 1, 0), loc="lower left", ncol=2, fontsize=18)
 
     if (add_watermark):
         ax[0].text(0.85, 0.85, 'C8 - ICRC2023', horizontalalignment='center', verticalalignment='center', transform = ax[0].transAxes, fontsize=18, alpha=0.5, color='gray')
@@ -87,7 +87,7 @@ def plot_Xmax_hist(X_list, profile_list, label_list, color_list, title='', NUM_B
 
 def plot_Xmax_hist_ratio(X_list, profile_list, label_list, color_list, title='', NUM_BINS=15, add_watermark=False):
     assert(len(X_list) > 1)
-    fig, ax = plt.subplots(2, 1, gridspec_kw={'height_ratios': [2, 1]}, figsize=(15,10),sharex=True)
+    fig, ax = plt.subplots(2, 1, gridspec_kw={'height_ratios': [2, 1]}, figsize=(8,6), sharex=True)
     
     ax[0].tick_params('x', labelbottom=False) # only for last plot
     
@@ -113,12 +113,12 @@ def plot_Xmax_hist_ratio(X_list, profile_list, label_list, color_list, title='',
     n_list = []
     
     for X_max_list, label, color, X_max_mean in zip(X_max_lists, label_list, color_list, X_max_mean_list):
-        n, _, _ = ax[0].hist(X_max_list, bins=bins, histtype='step', color=color, label=f"{label}, mean(X_max) = {X_max_mean:.2f} g/cm²")
+        n, _, _ = ax[0].hist(X_max_list, bins=bins, histtype='step', color=color, label=r"{0}, $\overline{{X_\mathrm{{max}}}}$ = {1:.2f} g/cm²".format(label, X_max_mean))
         n_list.append(n)
         
     ax[0].grid(which='both')
     ax[0].set_ylabel('# showers', fontsize=14)
-    ax[0].legend(bbox_to_anchor=(0, 1, 1, 0), loc="lower left", ncol=2, fontsize=14)
+    ax[0].legend(bbox_to_anchor=(0, 1, 1, 0), loc="lower left", ncol=1, fontsize=18)
     
     if (add_watermark):
         ax[0].text(0.85, 0.85, 'C8 - ICRC2023', horizontalalignment='center', verticalalignment='center', transform = ax[0].transAxes, fontsize=18, alpha=0.5, color='gray')
@@ -131,8 +131,7 @@ def plot_Xmax_hist_ratio(X_list, profile_list, label_list, color_list, title='',
     ax[1].set_ylabel(f"ratio to {label_list[0]}", fontsize=14)
     ax[1].set_ylim(-0.2, 0.2)
 
-    plt.legend(fontsize=12)
-    plt.xlabel('X_max / grammage', fontsize=12)
+    plt.xlabel(r'$X_\mathrm{max}$ / g/cm²', fontsize=14)
     fig.suptitle(title, fontsize=14)
     fig.tight_layout()
 
@@ -142,14 +141,14 @@ def plot_lateral_hist_ratio(bins, hist_list, label_list, color_list, title='', x
     hist: array of shape m * n, where m is the number of profiles. each row has n entires, where n describes the histogram bin entry
     '''
 
-    fig, ax = plt.subplots(2, 1, gridspec_kw={'height_ratios': [2, 1]}, figsize=(15,10),sharex=True)
+    fig, ax = plt.subplots(2, 1, gridspec_kw={'height_ratios': [2, 1]}, figsize=(8,6),sharex=True)
     
     ax[0].tick_params('x', labelbottom=False) # only for last plot
     for hist, label, color in zip(hist_list, label_list, color_list):
         ax[0].fill_between(bins[1:], np.percentile(hist, q=25, axis=0), np.percentile(hist, q=75, axis=0), step='pre', alpha=0.5, color=color)
         ax[0].step(bins[1:], np.percentile(hist, q=50, axis=0), label=label, color=color)
     ax[0].grid(which='major')
-    ax[0].set_ylabel('# particles', fontsize=18)
+    ax[0].set_ylabel('# particles', fontsize=14)
     if (xlog):
         ax[0].set_xscale('log')
     ax[0].set_yscale('log')
@@ -165,11 +164,11 @@ def plot_lateral_hist_ratio(bins, hist_list, label_list, color_list, title='', x
         ax[1].step(bins[1:], (vals_compare - vals_base)/vals_base, label=label, color=color)   
     ax[1].grid(which='major')
     fig.subplots_adjust(hspace=0.05)
-    ax[1].set_xlabel(xaxis, fontsize=18)
-    ax[1].set_ylabel(f"ratio to {label_list[0]}", fontsize=18)
+    ax[1].set_xlabel(xaxis, fontsize=14)
+    ax[1].set_ylabel(f"ratio to {label_list[0]}", fontsize=14)
     ax[1].set_ylim(*ratio_lim)
-    ax[0].tick_params(axis='both', labelsize=16)
-    ax[1].tick_params(axis='both', labelsize=16)
+    #ax[0].tick_params(axis='both', labelsize=14)
+    #ax[1].tick_params(axis='both', labelsize=14)
     #fig.suptitle(title, fontsize=18)
     fig.tight_layout()
        
@@ -182,7 +181,7 @@ def plot_long_hist_ratio_lpm(X_list, profile_list, X_list_LPM, profile_list_LPM,
     '''
     assert(len(X_list) > 1)
 
-    fig, ax = plt.subplots(2, 1, gridspec_kw={'height_ratios': [2, 1]}, figsize=(15,10),sharex=True)
+    fig, ax = plt.subplots(2, 1, gridspec_kw={'height_ratios': [2, 1]}, figsize=(8,6),sharex=True)
     
     ax[0].tick_params('x', labelbottom=False) # only for last plot
     for X, profile, label, color in zip(X_list, profile_list, label_list, color_list):
@@ -196,7 +195,7 @@ def plot_long_hist_ratio_lpm(X_list, profile_list, X_list_LPM, profile_list_LPM,
     ax[0].grid(which='both')
     ax[0].set_ylabel('# particles', fontsize=14)
     
-    ax[0].legend(bbox_to_anchor=(0, 1, 1, 0), loc="lower left", ncol=2, fontsize=14)
+    ax[0].legend(bbox_to_anchor=(0, 1, 1, 0), loc="lower left", ncol=2, fontsize=18)
 
     if (add_watermark):
         ax[0].text(0.85, 0.85, 'C8 - ICRC2023', horizontalalignment='center', verticalalignment='center', transform = ax[0].transAxes, fontsize=18, alpha=0.5, color='gray')
