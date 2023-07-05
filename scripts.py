@@ -104,13 +104,12 @@ def plot_Xmax_hist_ratio(X_list, profile_list, label_list, color_list, title='',
         X_max = []
         for prof in profile:
             X_max.append(X[np.argmax(prof)])
-        min_bin = min(min_bin, min(X))
-        max_bin = max(max_bin, max(X))
+        min_bin = min(min_bin, min(X_max))
+        max_bin = max(max_bin, max(X_max))
         X_max_lists.append(X_max)
         X_max_mean_list.append(np.mean(X_max))
         
     bins = np.linspace(min_bin, max_bin, NUM_BINS)
-    
     n_list = []
     
     for X_max_list, label, color, X_max_mean in zip(X_max_lists, label_list, color_list, X_max_mean_list):
