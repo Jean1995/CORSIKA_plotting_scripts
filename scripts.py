@@ -282,7 +282,7 @@ def plot_long_hist_ratio_lpm(X_list, profile_list, X_list_LPM, profile_list_LPM,
         X_common, indices_base, indices_compare = np.intersect1d(X_list[0], X, return_indices=True)
         vals_base = np.percentile(profile_list[0].T[indices_base], q=50, axis=1)
         vals_compare = np.percentile(profile.T[indices_compare], q=50, axis=1)
-        ax[1].step(X_common, (vals_compare - vals_base)/vals_base, label=label, color=color)   
+        ax[1].step(X_common, vals_compare/vals_base, label=label, color=color)   
 
 
     for X, profile, label, color in zip(X_list_LPM[1:], profile_list_LPM[1:], label_list[1:], color_list[1:]):
