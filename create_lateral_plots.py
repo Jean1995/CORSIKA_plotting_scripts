@@ -34,7 +34,7 @@ XLOG_TIME = True
 
 # onyl read in the first X showers. can be used to create plots quicker for debug purposes
 # might also be used if there are unequal numbers of equal showers in the individual simulations
-LIMIT_INPUT = 5 #np.inf
+LIMIT_INPUT = np.inf
 
 # Start...
 
