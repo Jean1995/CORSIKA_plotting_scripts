@@ -65,12 +65,12 @@ def plot_long_hist_ratio(X_list, profile_list, label_list, color_list, title='',
         X_common, indices_base, indices_compare = np.intersect1d(X_list[0], X, return_indices=True)
         vals_base = np.percentile(profile_list[0].T[indices_base], q=50, axis=1)
         vals_compare = np.percentile(profile.T[indices_compare], q=50, axis=1)
-        ax[1].step(X_common, (vals_compare - vals_base)/vals_base, label=label, color=color)   
+        ax[1].step(X_common, vals_compare/vals_base, label=label, color=color)   
     ax[1].grid(which='both')
     fig.subplots_adjust(hspace=0.05)
     ax[1].set_xlabel(r"grammage / g/cm²", fontsize=14)
     ax[1].set_ylabel(f"ratio to {label_list[0]}", fontsize=14)
-    ax[1].set_ylim(-0.2, 0.2)
+    ax[1].set_ylim(0.8, 1.2)
     fig.suptitle(title, fontsize=14)
     fig.tight_layout()
         
@@ -124,18 +124,18 @@ def plot_Xmax_hist_ratio(X_list, profile_list, label_list, color_list, title='',
         ax[0].text(0.85, 0.85, 'C8 - ICRC2023', horizontalalignment='center', verticalalignment='center', transform = ax[0].transAxes, fontsize=18, alpha=0.5, color='gray')
 
     for n, label, color in zip(n_list[1:], label_list[1:], color_list[1:]):
-        ax[1].step(bins[1:], (n - n_list[0]) / n_list[0], color=color)
+        ax[1].step(bins[1:], n / n_list[0], color=color)
     ax[1].grid(which='both')
     fig.subplots_adjust(hspace=0.05)
     ax[1].set_xlabel(r"grammage / g/cm²", fontsize=14)
     ax[1].set_ylabel(f"ratio to {label_list[0]}", fontsize=14)
-    ax[1].set_ylim(-0.2, 0.2)
+    ax[1].set_ylim(0.8, 1.2)
 
     plt.xlabel(r'$X_\mathrm{max}$ / g/cm²', fontsize=14)
     fig.suptitle(title, fontsize=14)
     fig.tight_layout()
 
-def plot_lateral_hist_ratio(bins, hist_list, label_list, color_list, title='', xaxis='', ratio_lim=(-1, 1), xlog=True, add_watermark=False):    
+def plot_lateral_hist_ratio(bins, hist_list, label_list, color_list, title='', xaxis='', ratio_lim=(0, 2), xlog=True, add_watermark=False):    
     '''
     bins: location of bins (length n)
     hist: array of shape m * n, where m is the number of profiles. each row has n entires, where n describes the histogram bin entry
@@ -161,7 +161,7 @@ def plot_lateral_hist_ratio(bins, hist_list, label_list, color_list, title='', x
         # find common X values for base and compare
         vals_base = np.percentile(hist_list[0], q=50, axis=0)
         vals_compare = np.percentile(hist, q=50, axis=0)
-        ax[1].step(bins[1:], (vals_compare - vals_base)/vals_base, label=label, color=color)   
+        ax[1].step(bins[1:], vals_compare/vals_base, label=label, color=color)   
     ax[1].grid(which='major')
     fig.subplots_adjust(hspace=0.05)
     ax[1].set_xlabel(xaxis, fontsize=14)
@@ -290,12 +290,12 @@ def plot_long_hist_ratio_lpm(X_list, profile_list, X_list_LPM, profile_list_LPM,
         X_common, indices_base, indices_compare = np.intersect1d(X_list_LPM[0], X, return_indices=True)
         vals_base = np.percentile(profile_list_LPM[0].T[indices_base], q=50, axis=1)
         vals_compare = np.percentile(profile.T[indices_compare], q=50, axis=1)
-        ax[1].step(X_common, (vals_compare - vals_base)/vals_base, label=label, color=color, linestyle='dashed')   
+        ax[1].step(X_common, vals_compare/vals_base, label=label, color=color, linestyle='dashed')   
 
     ax[1].grid(which='both')
     fig.subplots_adjust(hspace=0.05)
     ax[1].set_xlabel(r"grammage / g/cm²", fontsize=14)
     ax[1].set_ylabel(f"ratio to {label_list[0]}", fontsize=14)
-    ax[1].set_ylim(-0.2, 0.2)
+    ax[1].set_ylim(0.8, 1.2)
     fig.suptitle(title, fontsize=14)
     fig.tight_layout()
