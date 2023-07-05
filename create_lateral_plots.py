@@ -18,7 +18,7 @@ if (len(sys.argv) != 4):
     assert(False)
 
 C7_PATHS = [sys.argv[1]]
-C8_PATHS = [sys.argv[2]]
+C8_PATHS = [sys.argv[2], sys.argv[2]]
 OUTPUT_NAME = sys.argv[3]
 
 labels = ["CORSIKA 7", "CORSIKA 8"]
@@ -34,7 +34,7 @@ XLOG_TIME = True
 
 # onyl read in the first X showers. can be used to create plots quicker for debug purposes
 # might also be used if there are unequal numbers of equal showers in the individual simulations
-LIMIT_INPUT = np.inf
+LIMIT_INPUT = 5 #np.inf
 
 # Start...
 
@@ -126,6 +126,8 @@ C8_E_hists = []
 
 C8_t_hists = []
 
+C8_2d_hists = []
+
 NOTIFICATION_INTERVAL = 100 # get message for every Xth shower
 
 for PATH in C8_PATHS:
@@ -134,6 +136,8 @@ for PATH in C8_PATHS:
     r_hists = [ [] for _ in range(len(particles)) ] # create empty list for every particle type
     E_hists = [ [] for _ in range(len(particles)) ] # create empty list for every particle type
     t_hists = [ [] for _ in range(len(particles)) ] # create empty list for every particle type
+    hists_2d = [ [] for _ in range(len(particles)) ] # create empty list for every particle type
+
     for path in glob.glob(f"{PATH}/*/*/{NAME_PARTICLE_FOLDER_C8}/particles.parquet"):
         if (i > LIMIT_INPUT):
             print(f"Reached maximum input of {LIMIT_INPUT} showers, contiunue...")
@@ -162,9 +166,13 @@ for PATH in C8_PATHS:
             t_hist, _ = np.histogram(t_list, BINS_T)
             t_hists[count].append(t_hist)
 
+            hist_2d, _, _ = np.histogram2d(r_list, E_list, bins=[BINS_R, BINS_E]) 
+            hists_2d[count].append(hist_2d)
+
     C8_r_hists.append(r_hists)
     C8_E_hists.append(E_hists)
     C8_t_hists.append(t_hists)
+    C8_2d_hists.append(hists_2d)
 
 # read C7 particle files
 
@@ -176,12 +184,16 @@ C7_E_hists = []
 
 C7_t_hists = []
 
+C7_2d_hists = []
+
 for PATH in C7_PATHS:
     i = 0
     print("Read C7 showers from path", PATH)
     r_hists = [ [] for _ in range(len(particles)) ] # create empty list for every particle type
     E_hists = [ [] for _ in range(len(particles)) ] # create empty list for every particle type
     t_hists = [ [] for _ in range(len(particles)) ] # create empty list for every particle type
+    hists_2d = [ [] for _ in range(len(particles)) ] # create empty list for every particle type
+
     for path in glob.glob(f"{PATH}/DAT*[!.long]"):
         with CorsikaParticleFile(path) as f:
             for e in f:
@@ -212,29 +224,42 @@ for PATH in C7_PATHS:
                     t_hist, _ = np.histogram(t_list, BINS_T)
                     t_hists[count].append(t_hist)
 
+                    hist_2d, _, _ = np.histogram2d(r_list, E_list, bins=[BINS_R, BINS_E]) 
+                    hists_2d[count].append(hist_2d)
+
     C7_r_hists.append(r_hists)
     C7_E_hists.append(E_hists)
     C7_t_hists.append(t_hists)
+    C7_2d_hists.append(hists_2d)
 
 print("Plot lateral profiles")
 
 # r distribution
 
 for count, p_name in enumerate(particles_names):
-    print(count)
     plot_lateral_hist_ratio(BINS_R, [sublist[count] for sublist in C7_r_hists+C8_r_hists], labels, colors, f'{p_name}', r"distance to shower axis / m", ratio_lim=(-0.25, 0.25), add_watermark=True)
     plt.savefig(f"{OUTPUT_NAME}/lateral_{p_name}_r.pdf", dpi=300)
 
 # E distribution
 
 for count, p_name in enumerate(particles_names):
-    print(count)
     plot_lateral_hist_ratio(BINS_E, [sublist[count] for sublist in C7_E_hists+C8_E_hists], labels, colors, f'{p_name}', r"energy on observation plane / GeV", ratio_lim=(-0.25, 0.25), add_watermark=True)
     plt.savefig(f"{OUTPUT_NAME}/lateral_{p_name}_E.pdf", dpi=300)
 
 # t distribution
 
 for count, p_name in enumerate(particles_names):
-    print(count)
     plot_lateral_hist_ratio(BINS_T, [sublist[count] for sublist in C7_t_hists+C8_t_hists], labels, colors, f'{p_name}', r"arrival time delay / ns", xlog=XLOG_TIME, ratio_lim=(-0.25, 0,25), add_watermark=True)
     plt.savefig(f"{OUTPUT_NAME}/lateral_{p_name}_t.pdf", dpi=300)
+
+# 2d distribution in r-E
+
+for count, p_name in enumerate(particles_names):
+    plot_lateral_2d(BINS_R, BINS_E, [sublist[count] for sublist in C7_2d_hists+C8_2d_hists], labels, 'r / m', 'E / GeV', add_watermark=True)
+    plt.savefig(f"{OUTPUT_NAME}/lateral_{p_name}_2d_r_E.pdf", dpi=300)
+
+# 2d distribution in r-E
+
+for count, p_name in enumerate(particles_names):
+    plot_lateral_2d_ratio(BINS_R, BINS_E, [sublist[count] for sublist in C7_2d_hists+C8_2d_hists], labels, 'r / m', 'E / GeV', add_watermark=True)
+    plt.savefig(f"{OUTPUT_NAME}/lateral_{p_name}_2d_r_E_ratios.pdf", dpi=300)

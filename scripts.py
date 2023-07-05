@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pandas as pd
 import os
@@ -172,6 +173,74 @@ def plot_lateral_hist_ratio(bins, hist_list, label_list, color_list, title='', x
     #fig.suptitle(title, fontsize=18)
     fig.tight_layout()
        
+def plot_lateral_2d(bins_x, bins_y, hist_raw, label_list, xlabel, ylabel, add_watermark=False):
+    NUM_PLOTS = len(label_list) # how many subplots?
+    fig, axes = plt.subplots(nrows=1, ncols=NUM_PLOTS, sharey=True, figsize=(4 * NUM_PLOTS, 4))
+
+    medians = []
+    for hist in hist_raw:
+        medians.append(np.percentile(hist, q=50, axis=0)) # calculate medians out of all 2d histograms for every bin
+
+    max_bin = 0 # calculate biggest entry of histograms
+    for hist in medians:
+        max_bin = max(max_bin, max(hist.flatten()))
+
+    for ax, hist, label in zip(axes, medians, label_list):
+        im = ax.pcolormesh(bins_x, bins_y, hist.T, norm=mpl.colors.LogNorm(vmin=1e-0, vmax=max_bin))
+        ax.set_title(label, fontsize=18)
+        ax.set_xscale('log')
+        ax.set_yscale('log')
+        ax.set_xlabel(xlabel, fontsize=12)
+        ax.xaxis.set_minor_locator(mpl.ticker.LogLocator(numticks=999, subs="auto"))
+        ax.yaxis.set_minor_locator(mpl.ticker.LogLocator(numticks=999, subs="auto"))
+        if (add_watermark):
+            ax.text(0.71, 0.95, 'C8 - ICRC2023', horizontalalignment='center', verticalalignment='center', transform = ax.transAxes, fontsize=14, alpha=0.5, color='gray')
+
+
+    axes[0].set_ylabel(ylabel, fontsize=12) # shared y axis, so label only for first axis
+
+    fig.subplots_adjust(right=0.8, wspace=0.1) # make space for colorbar
+    cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+    fig.colorbar(im, cax=cbar_ax)
+
+def plot_lateral_2d_ratio(bins_x, bins_y, hist_raw, label_list, xlabel, ylabel, add_watermark=False):
+    NUM_PLOTS = len(label_list) - 1 # how many subplots?
+    fig, axes = plt.subplots(nrows=1, ncols=NUM_PLOTS, sharey=True, figsize=(4 * NUM_PLOTS, 4))
+
+    if (NUM_PLOTS==1):
+        axes = [axes] # if we only create one plot, axes is a single object. but this script expects a list of axes.
+
+    medians = []
+    for hist in hist_raw:
+        medians.append(np.percentile(hist, q=50, axis=0)) # calculate medians out of all 2d histograms for every bin
+
+    baseline = medians[0]
+
+    ratios = []
+    for median in medians[1:]:
+        print(np.shape(median))
+        ratios.append(np.nan_to_num((median - baseline)/baseline)) # avoid nans in division by zero
+
+
+    for ax, ratio, label in zip(axes, ratios, label_list[1:]):
+        im = ax.pcolormesh(bins_x, bins_y, ratio.T, vmin=-1, vmax=1, cmap='seismic')
+        ax.set_title(f'{label_list[0]} vs {label}', fontsize=14)
+        ax.set_xscale('log')
+        ax.set_yscale('log')
+        ax.set_xlabel(xlabel, fontsize=12)
+        ax.xaxis.set_minor_locator(mpl.ticker.LogLocator(numticks=999, subs="auto"))
+        ax.yaxis.set_minor_locator(mpl.ticker.LogLocator(numticks=999, subs="auto"))
+        if (add_watermark):
+            ax.text(0.71, 0.95, 'C8 - ICRC2023', horizontalalignment='center', verticalalignment='center', transform = ax.transAxes, fontsize=14, alpha=0.5, color='gray')
+
+
+    axes[0].set_ylabel(ylabel, fontsize=12) # shared y axis, so label only for first axis
+
+    fig.subplots_adjust(right=0.75, wspace=0.10) # make space for colorbar
+    cbar_ax = fig.add_axes([0.8, 0.15, 0.05, 0.7])
+    fig.colorbar(im, cax=cbar_ax)
+
+
 
 
 def plot_long_hist_ratio_lpm(X_list, profile_list, X_list_LPM, profile_list_LPM, label_list, color_list, title='', add_watermark=False):    
