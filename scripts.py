@@ -172,7 +172,7 @@ def plot_lateral_hist_ratio(bins, hist_list, label_list, color_list, title='', x
     #fig.suptitle(title, fontsize=18)
     fig.tight_layout()
        
-def plot_lateral_2d(bins_x, bins_y, hist_raw, label_list, xlabel, ylabel, add_watermark=False):
+def plot_lateral_2d(bins_x, bins_y, hist_raw, label_list, xlabel, ylabel, add_watermark=False, contour=True):
     NUM_PLOTS = len(label_list) # how many subplots?
     fig, axes = plt.subplots(nrows=1, ncols=NUM_PLOTS, sharey=True, figsize=(4 * NUM_PLOTS, 4))
 
@@ -186,6 +186,14 @@ def plot_lateral_2d(bins_x, bins_y, hist_raw, label_list, xlabel, ylabel, add_wa
 
     for ax, hist, label in zip(axes, medians, label_list):
         im = ax.pcolormesh(bins_x, bins_y, hist.T, norm=mpl.colors.LogNorm(vmin=1e-0, vmax=max_bin))
+        if (contour):
+            levels = np.logspace(1, np.floor(np.log10(max_bin)), int(np.floor(np.log10(max_bin))))
+            #fmt = mpl.ticker.LogFormatterMathtext() # scientific notation in clabel
+            #fmt.create_dummy_axis()
+            CS = ax.contour(10**((np.log10(bins_x)[:-1] + np.log10(bins_x)[1:]) / 2), 
+                       10**((np.log10(bins_y)[:-1] + np.log10(bins_y)[1:]) / 2), 
+                       hist.T, linewidths=1, levels=levels, alpha=0.7, colors='black')
+            #plt.clabel(CS, inline=1, fontsize=10, fmt=fmt) # this doesn't work as intended...
         ax.set_title(label, fontsize=18)
         ax.set_xscale('log')
         ax.set_yscale('log')
@@ -195,7 +203,6 @@ def plot_lateral_2d(bins_x, bins_y, hist_raw, label_list, xlabel, ylabel, add_wa
         ax.set_facecolor('silver')
         if (add_watermark):
             ax.text(0.71, 0.95, 'C8 - ICRC2023', horizontalalignment='center', verticalalignment='center', transform = ax.transAxes, fontsize=14, alpha=0.5, color='gray')
-
 
     axes[0].set_ylabel(ylabel, fontsize=12) # shared y axis, so label only for first axis
 

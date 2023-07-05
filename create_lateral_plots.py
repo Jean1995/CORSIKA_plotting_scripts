@@ -62,7 +62,7 @@ E_max = -np.inf
 # iterate over the first X showers of each data set.
 # if X is too big, this can take a long time.
 # if X is too small, statistics are not big enough.
-MAX_ITERATIONS = 5
+MAX_ITERATIONS = 10
 
 print("Start determining histogram limits")
 
