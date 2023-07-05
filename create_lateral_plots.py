@@ -18,7 +18,7 @@ if (len(sys.argv) != 4):
     assert(False)
 
 C7_PATHS = [sys.argv[1]]
-C8_PATHS = [sys.argv[2], sys.argv[2]]
+C8_PATHS = [sys.argv[2]]
 OUTPUT_NAME = sys.argv[3]
 
 labels = ["CORSIKA 7", "CORSIKA 8"]
