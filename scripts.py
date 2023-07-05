@@ -193,6 +193,7 @@ def plot_lateral_2d(bins_x, bins_y, hist_raw, label_list, xlabel, ylabel, add_wa
         ax.set_xlabel(xlabel, fontsize=12)
         ax.xaxis.set_minor_locator(mpl.ticker.LogLocator(numticks=999, subs="auto"))
         ax.yaxis.set_minor_locator(mpl.ticker.LogLocator(numticks=999, subs="auto"))
+        ax.set_facecolor('silver')
         if (add_watermark):
             ax.text(0.71, 0.95, 'C8 - ICRC2023', horizontalalignment='center', verticalalignment='center', transform = ax.transAxes, fontsize=14, alpha=0.5, color='gray')
 
@@ -219,7 +220,7 @@ def plot_lateral_2d_ratio(bins_x, bins_y, hist_raw, label_list, xlabel, ylabel, 
     ratios = []
     for median in medians[1:]:
         print(np.shape(median))
-        ratios.append(np.nan_to_num((median - baseline)/baseline)) # avoid nans in division by zero
+        ratios.append((median - baseline)/baseline)
 
 
     for ax, ratio, label in zip(axes, ratios, label_list[1:]):
@@ -230,6 +231,7 @@ def plot_lateral_2d_ratio(bins_x, bins_y, hist_raw, label_list, xlabel, ylabel, 
         ax.set_xlabel(xlabel, fontsize=12)
         ax.xaxis.set_minor_locator(mpl.ticker.LogLocator(numticks=999, subs="auto"))
         ax.yaxis.set_minor_locator(mpl.ticker.LogLocator(numticks=999, subs="auto"))
+        ax.set_facecolor('silver')
         if (add_watermark):
             ax.text(0.71, 0.95, 'C8 - ICRC2023', horizontalalignment='center', verticalalignment='center', transform = ax.transAxes, fontsize=14, alpha=0.5, color='gray')
 
