@@ -237,19 +237,19 @@ print("Plot lateral profiles")
 # r distribution
 
 for count, p_name in enumerate(particles_names):
-    plot_lateral_hist_ratio(BINS_R, [sublist[count] for sublist in C7_r_hists+C8_r_hists], labels, colors, f'{p_name}', r"distance to shower axis / m", ratio_lim=(-0.25, 0.25), add_watermark=True)
+    plot_lateral_hist_ratio(BINS_R, [sublist[count] for sublist in C7_r_hists+C8_r_hists], labels, colors, f'{p_name}', r"distance to shower axis / m", ratio_lim=(0.75, 1.25), add_watermark=True)
     plt.savefig(f"{OUTPUT_NAME}/lateral_{p_name}_r.pdf", dpi=300)
 
 # E distribution
 
 for count, p_name in enumerate(particles_names):
-    plot_lateral_hist_ratio(BINS_E, [sublist[count] for sublist in C7_E_hists+C8_E_hists], labels, colors, f'{p_name}', r"energy on observation plane / GeV", ratio_lim=(-0.25, 0.25), add_watermark=True)
+    plot_lateral_hist_ratio(BINS_E, [sublist[count] for sublist in C7_E_hists+C8_E_hists], labels, colors, f'{p_name}', r"energy on observation plane / GeV", ratio_lim=(0.75, 1.25), add_watermark=True)
     plt.savefig(f"{OUTPUT_NAME}/lateral_{p_name}_E.pdf", dpi=300)
 
 # t distribution
 
 for count, p_name in enumerate(particles_names):
-    plot_lateral_hist_ratio(BINS_T, [sublist[count] for sublist in C7_t_hists+C8_t_hists], labels, colors, f'{p_name}', r"arrival time delay / ns", xlog=XLOG_TIME, ratio_lim=(-0.25, 0,25), add_watermark=True)
+    plot_lateral_hist_ratio(BINS_T, [sublist[count] for sublist in C7_t_hists+C8_t_hists], labels, colors, f'{p_name}', r"arrival time delay / ns", xlog=XLOG_TIME, ratio_lim=(0.75, 1.25), add_watermark=True)
     plt.savefig(f"{OUTPUT_NAME}/lateral_{p_name}_t.pdf", dpi=300)
 
 # 2d distribution in r-E

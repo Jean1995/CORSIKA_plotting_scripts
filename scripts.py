@@ -98,7 +98,7 @@ def plot_Xmax_hist_ratio(X_list, profile_list, label_list, color_list, title='',
 
     min_bin = +np.inf
     max_bin = -np.inf
-   
+  
 
     for X, profile in zip(X_list, profile_list):
         X_max = []
