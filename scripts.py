@@ -213,7 +213,7 @@ def plot_lateral_2d(bins_x, bins_y, hist_raw, label_list, xlabel, ylabel, add_wa
 
 def plot_lateral_2d_ratio(bins_x, bins_y, hist_raw, label_list, xlabel, ylabel, add_watermark=False):
     NUM_PLOTS = len(label_list) - 1 # how many subplots?
-    fig, axes = plt.subplots(nrows=1, ncols=NUM_PLOTS, sharey=True, figsize=(4 * NUM_PLOTS, 4))
+    fig, axes = plt.subplots(nrows=1, ncols=NUM_PLOTS, sharey=True, figsize=(4.5 * NUM_PLOTS, 4))
 
     if (NUM_PLOTS==1):
         axes = [axes] # if we only create one plot, axes is a single object. but this script expects a list of axes.
@@ -246,7 +246,7 @@ def plot_lateral_2d_ratio(bins_x, bins_y, hist_raw, label_list, xlabel, ylabel, 
 
     axes[0].set_ylabel(ylabel, fontsize=12) # shared y axis, so label only for first axis
 
-    fig.subplots_adjust(right=0.75, wspace=0.10) # make space for colorbar
+    fig.subplots_adjust(right=0.75, left=0.17, wspace=0.10) # make space for colorbar
     cbar_ax = fig.add_axes([0.8, 0.15, 0.05, 0.7])
     fig.colorbar(im, cax=cbar_ax)
 
