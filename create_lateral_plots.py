@@ -28,9 +28,9 @@ NAME_PARTICLE_FOLDER_C8 = "particles" # change name of folder where C8 profiles 
 
 INJECTION_HEIGHT_C8 = 112.75e3 # in m, necessary for correction time calculation
 INJECTION_HEIGHT_C7 = 112.8e3 # in m
-OBSLEVEL = 6798 # in m. if unknown, set to 0.
+OBSLEVEL = 5935 # in m. if unknown, set to 0.
 
-XLOG_TIME = True
+XLOG_TIME = False
 
 # onyl read in the first X showers. can be used to create plots quicker for debug purposes
 # might also be used if there are unequal numbers of equal showers in the individual simulations
@@ -95,7 +95,8 @@ for PATH in C7_PATHS:
 NUM_HIST_BINS_T = 25
 MIN_HIST_BINS_T = 1e-3 # TODO: Weird artifact for CORSIKA 7 at small times compared to CORSIKA 8
 #MIN_HIST_BINS_T = t_min
-MAX_HIST_BINS_T = t_max
+MAX_HIST_BINS_T = 15000
+#MAX_HIST_BINS_T = t_max
 if (XLOG_TIME):
     BINS_T = np.geomspace(MIN_HIST_BINS_T, MAX_HIST_BINS_T, NUM_HIST_BINS_T)
 else:
@@ -249,7 +250,7 @@ for count, p_name in enumerate(particles_names):
 # t distribution
 
 for count, p_name in enumerate(particles_names):
-    plot_lateral_hist_ratio(BINS_T, [sublist[count] for sublist in C7_t_hists+C8_t_hists], labels, colors, f'{p_name}', r"arrival time delay / ns", xlog=XLOG_TIME, ratio_lim=(0.75, 1.25), add_watermark=True)
+    plot_lateral_hist(BINS_T, [sublist[count] for sublist in C7_t_hists+C8_t_hists], labels, colors, f'{p_name}', r"arrival time delay / ns", xlog=XLOG_TIME, add_watermark=True)
     plt.savefig(f"{OUTPUT_NAME}/lateral_{p_name}_t.pdf", dpi=300)
 
 # 2d distribution in r-E

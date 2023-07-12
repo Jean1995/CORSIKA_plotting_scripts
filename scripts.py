@@ -145,8 +145,11 @@ def plot_lateral_hist_ratio(bins, hist_list, label_list, color_list, title='', x
     
     ax[0].tick_params('x', labelbottom=False) # only for last plot
     for hist, label, color in zip(hist_list, label_list, color_list):
-        ax[0].fill_between(bins[1:], np.percentile(hist, q=25, axis=0), np.percentile(hist, q=75, axis=0), step='pre', alpha=0.5, color=color)
-        ax[0].step(bins[1:], np.percentile(hist, q=50, axis=0), label=label, color=color)
+        first_quartile = np.percentile(hist, q=25, axis=0)
+        third_quartile = np.percentile(hist, q=75, axis=0)
+        medians = np.percentile(hist, q=50, axis=0)
+        ax[0].fill_between(bins, np.insert(first_quartile, 0, first_quartile[0]), np.insert(third_quartile, 0, third_quartile[0]), step='pre', alpha=0.5, color=color)
+        ax[0].step(bins, np.insert(medians, 0, medians[0]), label=label, color=color)
     ax[0].grid(which='major')
     ax[0].set_ylabel('# particles', fontsize=14)
     if (xlog):
@@ -172,6 +175,36 @@ def plot_lateral_hist_ratio(bins, hist_list, label_list, color_list, title='', x
     #fig.suptitle(title, fontsize=18)
     fig.tight_layout()
        
+def plot_lateral_hist(bins, hist_list, label_list, color_list, title='', xaxis='', xlog=True, add_watermark=False):    
+    '''
+    bins: location of bins (length n)
+    hist: array of shape m * n, where m is the number of profiles. each row has n entires, where n describes the histogram bin entry
+    '''
+
+    fig, ax = plt.subplots(1, 1, figsize=(8,6))
+    
+    for hist, label, color in zip(hist_list, label_list, color_list):
+        first_quartile = np.percentile(hist, q=25, axis=0)
+        third_quartile = np.percentile(hist, q=75, axis=0)
+        medians = np.percentile(hist, q=50, axis=0)
+        ax.fill_between(bins, np.insert(first_quartile, 0, first_quartile[0]), np.insert(third_quartile, 0, third_quartile[0]), step='pre', alpha=0.5, color=color)
+        ax.step(bins, np.insert(medians, 0, medians[0]), label=label, color=color)
+    ax.grid(which='major')
+    ax.set_ylabel('# particles', fontsize=14)
+    if (xlog):
+        ax.set_xscale('log')
+    ax.set_yscale('log')
+    ax.legend(bbox_to_anchor=(0, 1, 1, 0), loc="lower left", ncol=len(label_list), fontsize=18)
+
+    if (add_watermark):
+        ax.text(0.85, 0.85, 'C8 - ICRC2023', horizontalalignment='center', verticalalignment='center', transform = ax.transAxes, fontsize=18, alpha=0.5, color='gray')
+ 
+    ax.set_xlabel(xaxis, fontsize=14)
+    #ax[0].tick_params(axis='both', labelsize=14)
+    #ax[1].tick_params(axis='both', labelsize=14)
+    #fig.suptitle(title, fontsize=18)
+    fig.tight_layout()
+
 def plot_lateral_2d(bins_x, bins_y, hist_raw, label_list, xlabel, ylabel, add_watermark=False, contour=True):
     NUM_PLOTS = len(label_list) # how many subplots?
     fig, axes = plt.subplots(nrows=1, ncols=NUM_PLOTS, sharey=True, figsize=(4 * NUM_PLOTS, 4))
