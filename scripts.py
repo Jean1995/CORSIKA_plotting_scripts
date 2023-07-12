@@ -164,7 +164,7 @@ def plot_lateral_hist_ratio(bins, hist_list, label_list, color_list, title='', x
         # find common X values for base and compare
         vals_base = np.percentile(hist_list[0], q=50, axis=0)
         vals_compare = np.percentile(hist, q=50, axis=0)
-        ax[1].step(bins[1:], vals_compare/vals_base, label=label, color=color)   
+        ax[1].step(bins, np.insert(vals_compare, 0, vals_compare[0])/np.insert(vals_base, 0, vals_base[0]), label=label, color=color)   
     ax[1].grid(which='major')
     fig.subplots_adjust(hspace=0.05)
     ax[1].set_xlabel(xaxis, fontsize=14)
