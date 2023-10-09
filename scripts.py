@@ -74,6 +74,63 @@ def plot_long_hist_ratio(X_list, profile_list, label_list, color_list, title='',
     fig.suptitle(title, fontsize=14)
     fig.tight_layout()
         
+def plot_long_hist_content_ratio(X_plot, X_plot_linestyles, X_list, profile_list, label_list, color_list, NUM_BINS=30, title='', add_watermark=False):    
+    '''
+    X_plot: for which X should be print the histogram?
+    X: len n, which describes the X bins
+    profile: array of shape m * n, where m is the number of profiles. every row has n entries which describe the longitudinal profile
+    '''
+    assert(len(X_list) > 1)
+
+    # find bin limits
+    min_bin = np.inf
+    max_bin = 0
+    for P in profile_list:
+        min_bin = min(min_bin, min(P.flatten()))
+        max_bin = max(max_bin, max(P.flatten()))
+    bins = np.linspace(min_bin, max_bin, NUM_BINS)
+
+    fig, ax = plt.subplots(2, 1, gridspec_kw={'height_ratios': [2, 1]}, figsize=(8,6),sharex=True)
+    
+    ax[0].tick_params('x', labelbottom=False) # only for last plot
+
+    for count, (X, profile, label, color) in enumerate(zip(X_list, profile_list, label_list, color_list)):
+        plot_legend = True
+        for X_value, linestyle in zip(X_plot, X_plot_linestyles):
+            index_of_X = X.to_list().index(X_value)
+            if plot_legend:
+                hist_content = ax[0].hist(profile.T[index_of_X], bins=bins, color=color, label=label, linestyle=linestyle, histtype='step')[0]
+                plot_legend = False
+            else:
+                hist_content = ax[0].hist(profile.T[index_of_X], bins=bins, color=color, linestyle=linestyle, histtype='step')[0]
+            if (count!=0):
+                index_of_X_baseline = X_list[0].to_list().index(X_value) # bit ugly because X_list dont need to be identical
+                baseline = np.histogram(profile_list[0].T[index_of_X_baseline], bins=bins)[0]
+                ax[1].step(bins, np.insert(hist_content/baseline, 0, hist_content[0]/baseline[0]), color=color, linestyle=linestyle)
+
+
+    ax[0].grid(which='both')
+    ax[0].set_ylabel('# occurences', fontsize=14)
+
+    ax[0].legend(bbox_to_anchor=(0, 1, 1, 0), loc="lower left", ncol=2, fontsize=18)
+
+    if (add_watermark):
+        ax[0].text(0.85, 0.85, 'C8 - ICRC2023', horizontalalignment='center', verticalalignment='center', transform = ax[0].transAxes, fontsize=18, alpha=0.5, color='gray')
+
+
+    #for X, profile, label, color in zip(X_list[1:], profile_list[1:], label_list[1:], color_list[1:]):
+        # find common X values for base and compare
+
+        #vals_base = np.percentile(profile_list[0].T[indices_base], q=50, axis=1)
+        #vals_compare = np.percentile(profile.T[indices_compare], q=50, axis=1)
+        #ax[1].step(X_common, vals_compare/vals_base, label=label, color=color)   
+    ax[1].grid(which='both')
+    fig.subplots_adjust(hspace=0.05)
+    ax[1].set_xlabel(r"bin content", fontsize=14)
+    ax[1].set_ylabel(f"ratio to {label_list[0]}", fontsize=14)
+    ax[1].set_ylim(0.2, 1.8)
+    fig.suptitle(title, fontsize=14)
+    fig.tight_layout()        
 
 def plot_Xmax_hist(X_list, profile_list, label_list, color_list, title='', NUM_BINS=15):
     for X, profile, label, color in zip(X_list, profile_list, label_list, color_list):
@@ -259,7 +316,6 @@ def plot_lateral_2d_ratio(bins_x, bins_y, hist_raw, label_list, xlabel, ylabel, 
 
     ratios = []
     for median in medians[1:]:
-        print(np.shape(median))
         ratios.append((median - baseline)/baseline)
 
 

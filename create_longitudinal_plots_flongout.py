@@ -33,7 +33,7 @@ OUTPUT_NAME = sys.argv[3]
 labels = ["CORSIKA 7", "CORSIKA 8"]
 colors = ['tab:orange', 'tab:blue']
 
-NAME_PROFILE_FOLDER_C8 = "profile" # change name of folder where C8 profiles are stored
+NAME_PROFILE_FOLDER_C8 = "profile_cherenkov" # change name of folder where C8 profiles are stored
 xmax_C8 = 1040 # upper limit of grammage for C8
 
 assert(len(labels) == len(colors))
@@ -232,4 +232,23 @@ if (CREATE_LONGITUDINAL_PLOTS):
                 profiles.append(profile_C8(df, p_type, NUM))
         plot_long_hist_ratio(grammage, profiles, labels, colors, add_watermark=True)
         plt.savefig(f"{OUTPUT_NAME}/long_{p_type}.pdf", dpi=300)
+
+### plot longitudinal content profiles
+
+if (CREATE_LONGITUDINAL_PLOTS):
+    print("Create longitudinal plots")
+    for p_type in ['electron', 'positron', 'photon', 'charged', 'muminus', 'muplus', 'muons', 'hadron']:
+        profiles = []
+        for df, NUM in zip(C7_DATA, C7_SHOWER_NUMBERS):
+            if (p_type=='muons'):
+                profiles.append(profile_C7(df, 'muminus', NUM) + profile_C7(df, 'muplus', NUM))
+            else:
+                profiles.append(profile_C7(df, p_type, NUM))
+        for df, NUM in zip(C8_DATA, C8_SHOWER_NUMBERS):
+            if (p_type=='muons'):
+                profiles.append(profile_C8(df, 'muminus', NUM) + profile_C8(df, 'muplus', NUM))
+            else:
+                profiles.append(profile_C8(df, p_type, NUM))
+        plot_long_hist_content_ratio([800, 470], ['solid', 'dashed'], grammage, profiles, labels, colors)
+        plt.savefig(f"{OUTPUT_NAME}/long_content_{p_type}.pdf", dpi=300)
 
